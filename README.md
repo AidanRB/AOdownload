@@ -7,7 +7,7 @@ zero. I'm 90% sure you have to have your login set to the "Classic" theme with 1
 
 1. Run the script
 2. Put in your username and password as requested.
-  A. NOTE: If you get your password wrong, the script won't tell you until it crashes.
+  * NOTE: If you get your password wrong, the script won't tell you until it crashes.
 3. The thread number is 15444.  Put it in.
 4. Put in what page you want to start downloading at (probably 1).
 5. Put in how many pages you want downloaded.
