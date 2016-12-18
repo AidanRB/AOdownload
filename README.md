@@ -3,7 +3,8 @@ To use the script, either download [this file](https://github.com/AidanRB/AOdown
 
 To download Impromptu:
 
-0. I'm 90% sure you have to have your login set to the "Classic" theme with 10 posts per page.  THIS IS NOT THE DEFAULT.  10 posts should be good, but the default is the AO theme.  To change this, open the forums and scroll down to the bottom.  On the bottom left is a dropdown labeled "AO".  Click it and set it to Default.  If you've changed the number of posts per page, you know how to set it back to 10.
+zero. I'm 90% sure you have to have your login set to the "Classic" theme with 10 posts per page.  THIS IS NOT THE DEFAULT.  10 posts should be good, but the default is the AO theme.  To change this, open the forums and scroll down to the bottom.  On the bottom left is a dropdown labeled "AO".  Click it and set it to Default.  If you've changed the number of posts per page, you know how to set it back to 10.
+
 1. Run the script
 2. Put in your username and password as requested.
   A. NOTE: If you get your password wrong, the script won't tell you until it crashes.
