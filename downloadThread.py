@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import time
 import os
+import getpass
 
 #author: td class="post_author"
 #post:   div class="post_body"
@@ -17,7 +18,7 @@ def gatherCookieJar():
 	"submit": "Login",
 	"quick_login": "1",
 	"quick_username": raw_input("Username:\t"),
-	"quick_password": raw_input("Password:\t"),
+	"quick_password": getpass.getpass("Password:\t"),
 	}
 
 	login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))		#Gathers cookies nessecary for login.
