@@ -11,7 +11,7 @@ zero. I'm 90% sure you have to have your login set to the "Classic" theme with 1
 3. The thread number is 15444.  Put it in.
 4. Put in what page you want to start downloading at (probably 1).
 5. Put in how many pages you want downloaded.
-  B. NOTE: If you use the current total number of pages, it probably won't work, as it dependes on there being 10 posts per page.  You're going to have to use one less than the current final page.
+  * NOTE: If you use the current total number of pages, it probably won't work, as it dependes on there being 10 posts per page.  You're going to have to use one less than the current final page.
 6. If all goes well, it will download the webpages with the posts.
 7. For downloading Impromptu, you probably want to hit: n to CSV, n to here, Y TO TEXT FILE (followed by the filename (it automatically appends .txt, so just put in "impromptu pages 1 to whatever")).
 8. UNLESS YOU WANT LOTS OF USELESS HTML FILES, hit Y to the next one.  It cleans up its temporary mess.
