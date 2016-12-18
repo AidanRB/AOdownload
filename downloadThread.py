@@ -169,9 +169,9 @@ global times
 print("| Word association | 468   |")
 print("| Impromptu        | 15444 |")
 
-threadnum = int(raw_input("What thread do you want to download?  (468 is Word Association)  "))
-pagenum = int(raw_input("What page should be the first one?                               "))
-pagerange = int(raw_input("How many pages do you want downloaded?                           "))
+threadnum = int(raw_input("What thread do you want to download?       "))
+pagenum = int(raw_input("What page should be the first one?         "))
+pagerange = int(raw_input("How many pages do you want downloaded?     "))
 
 print("Downloading " + str(pagerange) + " pages of thread " + str(threadnum) + " starting at page " + str(pagenum) + ".")
 
