@@ -140,7 +140,11 @@ def writePageWA():
 		post = re.sub('\\\\t|\\\\r', '', posts.find_all("div")[j].get_text())
 		post = re.sub('\\\\n/^(.*?)\\\\n/', "The post was here", post)
 
-		writef.write(time + "\t" + author + "\t" + post + "\n")
+		post = post.split(" ")
+
+		post = post[0].split("\\n")
+
+		writef.write(time + "\t" + author + "\t" + post[0] + "\n")
 
 def writeThreadWA(tid, pagenumber, pages, filename):
 	global writef
@@ -195,7 +199,7 @@ if(towritecustomornottowritecustom == "Y" or towritecustomornottowritecustom == 
 	writeThreadCustom(threadnum, pagenum, pagerange, str(raw_input("What should the file be called?  ")))
 
 if(threadnum == 468 or threadnum == 19185):
-	waconfirm = raw_input("Do you want the first line in each post in a file?  y/N:  ")
+	waconfirm = raw_input("Do you want the first word in each post in a file?  y/N:  ")
 	if(waconfirm == "Y" or waconfirm == "y"):
 		writeThreadWA(threadnum, pagenum, pagerange, str(raw_input("What should the file be called?  ")))
 
