@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import getpass
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
