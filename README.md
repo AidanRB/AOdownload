@@ -1,19 +1,20 @@
 # AOdownload
+
+Note: it currently only works with Python 2.  Python 3 will crash.  To check your version, run "python --version".  Sudo apt-get install python2 should install the correct version, if you have 3.
+
 To use the script, either download [this file](https://github.com/AidanRB/AOdownload/blob/master/downloadThread.py) or clone the repository.
 
-To download Impromptu:
+To download a thread:
 
-zero. I'm 90% sure you have to have your login set to the "Classic" theme with 10 posts per page.  THIS IS NOT THE DEFAULT.  10 posts should be good, but the default is the AO theme.  To change this, open the forums and scroll down to the bottom.  On the bottom left is a dropdown labeled "AO".  Click it and set it to Default.  If you've changed the number of posts per page, you know how to set it back to 10.
+zero. Now theme-independent!
 
-1. Run the script
-2. Put in your username and password as requested.
-  * NOTE: If you get your password wrong, the script won't tell you until it crashes.
-3. The thread number is 15444.  Put it in.
-4. Put in what page you want to start downloading at (probably 1).
-5. Put in how many pages you want downloaded.
-  * NOTE: If you use the current total number of pages, it probably won't work, as it dependes on there being 10 posts per page.  You're going to have to use one less than the current final page.
-6. If all goes well, it will download the webpages with the posts.
-7. For downloading Impromptu, you probably want to hit: n to CSV, n to here, Y TO TEXT FILE (followed by the filename (it automatically appends .txt, so just put in "impromptu pages 1 to whatever")).
-8. UNLESS YOU WANT LOTS OF USELESS HTML FILES, hit Y to the next one.  It cleans up its temporary mess.
+1. Run the script.
+2. Put in the thread number you want it to download.
+3. Put in what page you want to start downloading at.
+4. Put in what page you want to stop downloading at.
+  * NOTE: It now works with however many posts there are on a page, unless you have a custom number of posts per page (it'll still download, just with messed up post numbers).  However, the last page should download even if it has less than 10 posts.
+5. Put in username/password as requested.
+6. Put in whether you want a text file or a CSV.
+6. If all goes well, it will download to a CSV/TXT.
 
 If this doesn't work, gimme a holler.  The text file lands in the same folder as the script is in (probably Downloads or wherever you put it).
