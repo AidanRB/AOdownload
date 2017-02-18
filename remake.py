@@ -1,8 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import re
-import time
-import os
 import getpass
 
 threadnumber = input("What thread?\t")
@@ -18,7 +15,6 @@ def gatherCookieJar():
     "quick_username": raw_input("Username:\t"),
     "quick_password": getpass.getpass("Password:\t"),
     }
-
     global login
     login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))  #Gathers cookies nessecary for login.
 
@@ -27,7 +23,7 @@ def gatherCookieJar():
 
 def getPage(tid, pid):
     global page
-    page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content)
+    page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content, "html.parser")
 
 def getAuthors1Page():
     global authors
@@ -40,6 +36,12 @@ def getTimes1Page():
 def getPosts1Page():
     global posts
     posts = page.find_all("div", class_="message")
+
+def getAll1Page(pid):
+    getPage(threadnumber, pid)
+    getPosts1Page()
+    getAuthors1Page()
+    getTimes1Page()
 
 def print1Page():
     for i in range(len(authors)):
@@ -55,5 +57,27 @@ def csv1Page():
 
 def csvMultiPage():
     csvOpen()
-    for i in range(lastpage - firstpage + 1):
-        print(i)
+    global pagenumber
+    for pagenumber in range(lastpage - firstpage + 1):
+        print("Downloading page " + str(pagenumber + 1))
+        getAll1Page(firstpage + pagenumber)
+        csv1Page()
+
+def txtOpen():
+    global txt
+    txt = open("thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".txt", 'w')
+
+def txt1Page():
+    for i in range(len(authors)):
+        txt.write("Post #" + str(pagenumber * 10 + i + 1) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
+
+def txtMultiPage():
+    txtOpen()
+    global pagenumber
+    for pagenumber in range(lastpage - firstpage + 1):
+        print("Downloading page " + str(pagenumber + 1))
+        getAll1Page(firstpage + pagenumber)
+        txt1Page()
+
+
+gatherCookieJar()
