@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import getpass
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 threadnumber = input("What thread?\t")
 firstpage = input("First page:\t")
@@ -81,3 +84,9 @@ def txtMultiPage():
 
 
 gatherCookieJar()
+
+type = raw_input("CSV or TXT?\t").lower()
+if(type == "txt" or type == "text" or type == "t" or type == "2"):
+    txtMultiPage()
+elif(type == "csv" or type == "c" or type == "1"):
+    csvMultiPage()
