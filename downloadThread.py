@@ -3,13 +3,16 @@ from bs4 import BeautifulSoup
 import getpass
 import sys
 
+#Set encoding to utf8 so we don't have weird problems with odd characters
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+#Gather input about the data to be downloaded
 threadnumber = input("What thread?\t")
 firstpage = input("First page:\t")
 lastpage = input("Last page:\t")
 
+#Gathers login information
 def gatherCookieJar():
     DATA = {  #Data for logging in.
     "url": "https://amblesideonline.org/forum/showthread.php?tid=468",
@@ -20,45 +23,54 @@ def gatherCookieJar():
     "quick_password": getpass.getpass("Password:\t"),
     }
     global login
-    login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))  #Gathers cookies nessecary for login.
-
+    login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))
     print("Login complete")
     return login
 
+#Loads one page into RAM as a BeautifulSoup object
 def getPage(tid, pid):
     global page
     page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content, "html.parser")
 
+#Pulls the authors out of the loaded page
 def getAuthors1Page():
     global authors
     authors = page.find_all("div", class_="author")
 
+#Pulls the times out of the loaded page
 def getTimes1Page():
     global times
     times = page.find_all("div", class_="dateline")
 
+#Pulls the posts out of the loaded page
 def getPosts1Page():
     global posts
     posts = page.find_all("div", class_="message")
 
+#Loads and parses one page
 def getAll1Page(pid):
     getPage(threadnumber, pid)
     getPosts1Page()
     getAuthors1Page()
     getTimes1Page()
 
+#Prints one page on the terminal
+#TODO: actually use this
 def print1Page():
     for i in range(len(authors)):
         print("Post #" + str(pagenumber * 10 + i) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
 
+#Opens a CSV file for writing
 def csvOpen():
     global csv
     csv = open("thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".csv", 'w')
 
+#Writes one page of posts to the opened CSV, using tab as seperator
 def csv1Page():
     for i in range(len(authors)):
         csv.write(str(pagenumber * 10 + i) + "\t" + times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
 
+#Writes all requested pages to the opened CSV
 def csvMultiPage():
     csvOpen()
     global pagenumber
@@ -67,6 +79,7 @@ def csvMultiPage():
         getAll1Page(firstpage + pagenumber)
         csv1Page()
 
+#Opens a text file for writing
 def txtOpen():
     global txt
     txt = open("thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".txt", 'w')
@@ -75,6 +88,7 @@ def txt1Page():
     for i in range(len(authors)):
         txt.write("Post #" + str(pagenumber * 10 + i + 1) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
 
+#Writes all requested pages to a text file
 def txtMultiPage():
     txtOpen()
     global pagenumber
@@ -83,9 +97,10 @@ def txtMultiPage():
         getAll1Page(firstpage + pagenumber)
         txt1Page()
 
-
+#Logs in
 gatherCookieJar()
 
+#Asks what kind of file to write to
 type = raw_input("CSV or TXT?\t").lower()
 if(type == "txt" or type == "text" or type == "t" or type == "2"):
     txtMultiPage()
