@@ -7,6 +7,12 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+#Checks for a custom number of posts per page and if not, uses 10.
+if(len(sys.argv) == 2 and sys.argv[1].isdigit()):
+    ppp = int(sys.argv[1])
+else:
+    ppp = 10
+
 #Gather input about the data to be downloaded
 threadnumber = input("What thread?\t")
 firstpage = input("First page:\t")
@@ -58,7 +64,7 @@ def getAll1Page(pid):
 #TODO: actually use this
 def print1Page():
     for i in range(len(authors)):
-        print("Post #" + str(pagenumber * 10 + i) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
+        print("Post #" + str(pagenumber * ppp + i) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
 
 #Opens a CSV file for writing
 def csvOpen():
@@ -86,7 +92,7 @@ def txtOpen():
 
 def txt1Page():
     for i in range(len(authors)):
-        txt.write("Post #" + str(pagenumber * 10 + i + 1) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
+        txt.write("Post #" + str(pagenumber * ppp + i + 1) + ":  " + authors[i].get_text() + " posted at " + times[i].get_text() + ":\n" + posts[i].get_text() + "\n\n")
 
 #Writes all requested pages to a text file
 def txtMultiPage():
