@@ -1,6 +1,8 @@
 # AOdownload
 
-Note: it currently only works with Python 2.  Python 3 will crash.  To check your version, run "python --version".  Sudo apt-get install python2 should install the correct version, if you have 3.
+Note: it currently only works with Python 2.  Python 3 will crash.  To check your version, run "python --version".  "sudo apt-get install python2" should install the correct version, if you have 3.
+
+Note: It depends on requests and BeautifulSoup4.  To install these, run "pip install requests bs4".
 
 To use the script, either download [this file](https://github.com/AidanRB/AOdownload/blob/master/downloadThread.py) or clone the repository.
 

@@ -5,31 +5,39 @@ import sys
 import argparse
 
 #Set encoding to utf8 so we don't have weird problems with odd characters
-reload(sys)
-sys.setdefaultencoding('utf8')
+try:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+except NameError:
+    print("While the script may download on your system, it may have escape codes in the result.")
 
-#Checks for a custom number of posts per page and if not, uses 10.
-"""if(len(sys.argv) == 2 and sys.argv[1].isdigit()):
-    ppp = int(sys.argv[1])
-else:
-    ppp = 10"""
+try:
+    parser = argparse.ArgumentParser(description="Download a thread from the AO forums. More information can be found at https://goo.gl/L88u48")
+    parser.add_argument("thread", help="Thread ID to download (number)", type=int)
+    parser.add_argument("first", help="Page on which to start downloading", type=int)
+    parser.add_argument("last", help="Page on which to stop downloading", type=int)
+    parser.add_argument("username", help="Username to authenticate with")
+    parser.add_argument("out", help="Output type: Txt, Csv, or Print (on terminal)")
+    parser.add_argument("--ppp", help="Custom posts per page; for use if you have a custom set.", type=int, default=10)
 
-parser = argparse.ArgumentParser(description="Download a thread from the AO forums. More information can be found at https://goo.gl/L88u48")
-parser.add_argument("thread", help="Thread ID to download (number)", type=int)
-parser.add_argument("first", help="Page on which to start downloading", type=int)
-parser.add_argument("last", help="Page on which to stop downloading", type=int)
-parser.add_argument("username", help="Username to authenticate with")
-parser.add_argument("out", help="Output type: Txt, Csv, or Print (on terminal)")
-parser.add_argument("--ppp", help="Custom posts per page; for use if you have a custom set.", type=int, default=10)
+    args = parser.parse_args()
 
-args = parser.parse_args()
+    threadnumber = args.thread
+    firstpage = args.first
+    lastpage = args.last
+    ppp = args.ppp
+    type = args.out.lower()
+    username = args.username
+except:
+    print("You messed something up; entering interactive mode:\n")
 
-threadnumber = args.thread
-firstpage = args.first
-lastpage = args.last
-ppp = args.ppp
-type = args.out.lower()
-username = args.username
+    threadnumber = int(input("Thread: "))
+    firstpage = int(input("First page: "))
+    lastpage = int(input("Last page: "))
+    ppp = int(input("Posts per page (usually 10): "))
+    type = input("Output type: ").lower()
+    username = input("Username: ")
+
 password = getpass.getpass("Password:\t")
 #Gather input about the data to be downloaded
 """threadnumber = input("What thread?\t")
