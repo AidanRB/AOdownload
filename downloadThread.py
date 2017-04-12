@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import getpass
 import sys
 import argparse
+from progress.bar import Bar
 
 #Set encoding to utf8 so we don't have weird problems with odd characters
 try:
@@ -43,6 +44,9 @@ password = getpass.getpass("Password:\t")
 """threadnumber = input("What thread?\t")
 firstpage = input("First page:\t")
 lastpage = input("Last page:\t")"""
+
+#Prepare progress bar
+progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 1, suffix = '%(eta_td)s')
 
 #Gathers login information
 def gatherCookieJar():
@@ -95,7 +99,8 @@ def print1Page():
 def printMultiPage():
     global pagenumber
     for pagenumber in range(lastpage - firstpage + 1):
-        print("Downloading page " + str(pagenumber + 1))
+        #print("Downloading page " + str(pagenumber + 1))
+        progressbar.next()
         getAll1Page(firstpage + pagenumber)
         print1Page()
 
@@ -107,14 +112,18 @@ def csvOpen():
 #Writes one page of posts to the opened CSV, using tab as seperator
 def csv1Page():
     for i in range(len(authors)):
-        csv.write(times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
+        if(threadnumber == 468):
+            csv.write(posts[i].get_text().split("\n")[0] + "\n")
+        else:
+            csv.write(times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
 
 #Writes all requested pages to the opened CSV
 def csvMultiPage():
     csvOpen()
     global pagenumber
     for pagenumber in range(lastpage - firstpage + 1):
-        print("Downloading page " + str(pagenumber + 1))
+        #print("Downloading page " + str(pagenumber + 1))
+        progressbar.next()
         getAll1Page(firstpage + pagenumber)
         csv1Page()
 
@@ -132,7 +141,8 @@ def txtMultiPage():
     txtOpen()
     global pagenumber
     for pagenumber in range(lastpage - firstpage + 1):
-        print("Downloading page " + str(pagenumber + 1))
+        #print("Downloading page " + str(pagenumber + 1))
+        progressbar.next()
         getAll1Page(firstpage + pagenumber)
         txt1Page()
 
@@ -146,3 +156,5 @@ elif(type == "csv" or type == "c" or type == "2"):
     csvMultiPage()
 elif(type == "print" or type == "p" or type == "3"):
     printMultiPage()
+
+progressbar.finish()
