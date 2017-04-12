@@ -35,8 +35,8 @@ except:
     firstpage = int(input("First page: "))
     lastpage = int(input("Last page: "))
     ppp = int(input("Posts per page (usually 10): "))
-    type = input("Output type: ").lower()
-    username = input("Username: ")
+    type = raw_input("Output type: ").lower()
+    username = raw_input("Username: ")
 
 password = getpass.getpass("Password:\t")
 #Gather input about the data to be downloaded
