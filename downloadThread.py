@@ -20,9 +20,7 @@ try:
     parser.add_argument("username", help="Username to authenticate with")
     parser.add_argument("out", help="Output type: Txt, Csv, or Print (on terminal)")
     parser.add_argument("--ppp", help="Custom posts per page; for use if you have a custom set.", type=int, default=10)
-
     args = parser.parse_args()
-
     threadnumber = args.thread
     firstpage = args.first
     lastpage = args.last
@@ -31,7 +29,6 @@ try:
     username = args.username
 except:
     print("You messed something up; entering interactive mode:\n")
-
     threadnumber = int(input("Thread: "))
     firstpage = int(input("First page: "))
     lastpage = int(input("Last page: "))
@@ -48,6 +45,9 @@ lastpage = input("Last page:\t")"""
 #Prepare progress bar
 progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 1, suffix = '%(eta_td)s')
 
+#Output filename
+filename = ''
+
 #Gathers login information
 def gatherCookieJar():
     DATA = {  #Data for logging in.
@@ -60,7 +60,6 @@ def gatherCookieJar():
     }
     global login
     login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))
-    print("Login complete")
     return login
 
 #Loads one page into RAM as a BeautifulSoup object
@@ -98,6 +97,7 @@ def print1Page():
 #Prints all requested pages to the terminal
 def printMultiPage():
     global pagenumber
+    filename = "nowhere!"
     for pagenumber in range(lastpage - firstpage + 1):
         #print("Downloading page " + str(pagenumber + 1))
         progressbar.next()
@@ -107,7 +107,9 @@ def printMultiPage():
 #Opens a CSV file for writing
 def csvOpen():
     global csv
-    csv = open("thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".csv", 'w')
+    global filename
+    filename = "thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".csv"
+    csv = open(filename, 'w')
 
 #Writes one page of posts to the opened CSV, using tab as seperator
 def csv1Page():
@@ -130,7 +132,9 @@ def csvMultiPage():
 #Opens a text file for writing
 def txtOpen():
     global txt
-    txt = open("thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".txt", 'w')
+    global filename
+    filename = "thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".txt"
+    txt = open(filename, 'w')
 
 def txt1Page():
     for i in range(len(authors)):
@@ -158,3 +162,5 @@ elif(type == "print" or type == "p" or type == "3"):
     printMultiPage()
 
 progressbar.finish()
+
+print("Downloaded to " + filename)
