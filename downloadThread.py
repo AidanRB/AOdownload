@@ -4,6 +4,7 @@ import getpass
 import sys
 import argparse
 from progress.bar import Bar
+import string
 
 #Set encoding to utf8 so we don't have weird problems with odd characters
 try:
@@ -47,6 +48,9 @@ progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 
 
 #Output filename
 filename = ''
+
+#All characters
+allchars = string.maketrans("","")
 
 #Gathers login information
 def gatherCookieJar():
@@ -115,7 +119,7 @@ def csvOpen():
 def csv1Page():
     for i in range(len(authors)):
         if(threadnumber == 468):
-            csv.write(posts[i].get_text().split("\n")[0] + "\n")
+            csv.write(str(posts[i].get_text().split("\n")[0]).translate(string.maketrans("",""), string.punctuation).lower() + "\n")
         else:
             csv.write(times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
 
