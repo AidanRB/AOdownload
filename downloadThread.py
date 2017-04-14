@@ -29,7 +29,7 @@ try:
     type = args.out.lower()
     username = args.username
 except:
-    print("You messed something up; entering interactive mode:\n")
+    print("You messed something up; entering interactive mode.\n")
     threadnumber = int(input("Thread: "))
     firstpage = int(input("First page: "))
     lastpage = int(input("Last page: "))
