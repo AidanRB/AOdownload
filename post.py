@@ -68,7 +68,7 @@ def printHistory():
     global columnwidth
     columnwidth = max(len(author) for author in newaa) + 4
     for ap in aparray:
-        print "".join(aorp.ljust(columnwidth) for aorp in ap)
+        print (ap[0].ljust(columnwidth) + ap[1])
         print
 
 login = gatherCookieJar()

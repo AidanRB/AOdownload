@@ -26,8 +26,8 @@ def gatherCookieJar():
     login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))
     return login
 
-def subToSoup(cookies):
-    return BeautifulSoup(requests.get("https://amblesideonline.org/forum/usercp.php?action=subscriptions", cookies = cookies))
+def subToSoup(cookies, pnum):
+    return BeautifulSoup(requests.get("https://amblesideonline.org/forum/usercp.php?action=subscriptions&page=" + str(pnum), cookies = cookies).content, "html.parser")
 
 def extractTnP(pageBS):
     threads = pageBS.find_all(class_=["subject_old", "subject_new"])
@@ -39,17 +39,22 @@ def extractTnP(pageBS):
         tnums.append(thread['href'][19:])
         noro.append(thread['class'][0][8:])
     tposters = []
-    for thread in pageBS.select("table.tborder"):
-        tposters.append(thread.select("tr")[4].select("td")[5].select("a")[1].get_text())
+    """for thread in pageBS.select("table.tborder"):
+        tposters.append(thread.select("tr")[4].select("td")[5].select("a")[1].get_text())"""
     return tnames, tnums, noro, tposters
+
+def printSubs(threads):
+    cw = max(len(num) for num in tnums) + 2
+    for thread in threads:
+        print(thread[1] + " - " + thread[2].ljust(cw) + " - " + thread[0] + ":")
 
 login = gatherCookieJar()
 
-pageBS = subToSoup(login.cookies)
+pageBS = subToSoup(login.cookies, 1)
 
 tnames, tnums, noro, tposters = extractTnP(pageBS)
 
-print(tnames)
-print(tnums)
-print(noro)
-print(tposters)
+
+threads = zip(tnames, noro, tnums)
+
+printSubs(threads)
