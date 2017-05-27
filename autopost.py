@@ -14,6 +14,8 @@ password = getpass.getpass("Password:\t")
 threadnum = 468
 avoid468 = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \n'
 synant = True
+avoida = username.lower()
+userlen = len(username)
 
 @contextmanager
 def suppress_stdout():
@@ -69,8 +71,9 @@ def getHistory():
         newpa.append(postarray[i].get_text().split('\n')[1])
     return newaa[-1], str(newpa[-1]).translate(string.maketrans("",""), avoid468).lower()
 
-def autopost(lastp):
+def autopost(lasta, lastp):
     global synant
+    posting = True
     with suppress_stdout():
         if(synant):
             syns = syn(lastp)
@@ -79,22 +82,20 @@ def autopost(lastp):
             syns = ant(lastp)
             synant = True
         if(syns == None):
-            means = meaning(lastp)
+            posting = False
 
-    if(syns != None):
+    if(posting):
         postraw = syns[0]
-    elif(means == None):
-        postraw = "what XD\nI'm just a bot!  I can't understand that!"
+        firstletter = postraw[0].upper()
+        postword = firstletter + postraw[1:]
+        postword = postword.ljust(4) + '.'
+        print("Replying with " + postword + "..")
+        postReply(468, "Autoposted", postword)
+        print("Replied!")
+        avoida = username.lower()
     else:
-        wordtype, wordmeans = means.items()[0]
-        postraw = wordtype
-
-    firstletter = postraw[0].upper()
-    postword = firstletter + postraw[1:]
-    postword = postword.ljust(4) + '.'
-    print("Replying with " + postword + "..")
-    postReply(468, "Autoposted", postword)
-    print("Replied!")
+        avoida = lasta.lower()[:userlen]
+        print("Not autoposting.")
 
 syn = PyDictionary.synonym
 ant = PyDictionary.antonym
@@ -107,13 +108,12 @@ while(True):
 
     lasta, lastp = getHistory()
 
-    userlen = len(username)
-
     print("###")
 
     if(username.lower() != lasta[:userlen].lower()):
         print("\n" + lasta + " - " + lastp)
-        autopost(lastp)
+        if(avoida != lasta):
+            autopost(lasta, lastp)
         time.sleep(30)
 
     time.sleep(30)
