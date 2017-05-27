@@ -82,6 +82,13 @@ def autopost(lasta, lastp):
             syns = ant(lastp)
             synant = True
         if(syns == None):
+            if(synant):
+                syns = syn(lastp)
+                synant = False
+            else:
+                syns = ant(lastp)
+                synant = True
+        if(syns == None):
             posting = False
 
     if(posting):
@@ -94,8 +101,9 @@ def autopost(lasta, lastp):
         print("Replied!")
         avoida = username.lower()
     else:
-        avoida = lasta.lower()[:userlen]
+        avoida = lasta.lower()[:3]
         print("Not autoposting.")
+        print("Avoiding " + avoida)
 
 syn = PyDictionary.synonym
 ant = PyDictionary.antonym
@@ -112,7 +120,8 @@ while(True):
 
     if(username.lower() != lasta[:userlen].lower()):
         print("\n" + lasta + " - " + lastp)
-        if(avoida != lasta):
+        print("lasta/avoida " + lasta[:3].lower() + "/" + avoida)
+        if(avoida != lasta[:3].lower()):
             autopost(lasta, lastp)
         time.sleep(30)
 

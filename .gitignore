@@ -6,3 +6,4 @@
 !.gitignore
 !post.py
 !subscriptions.py
+!autopost.py
