@@ -14,7 +14,7 @@ password = getpass.getpass("Password:\t")
 threadnum = 468
 avoid468 = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \n'
 synant = True
-avoida = username.lower()
+avoidp = ""
 userlen = len(username)
 waits = float(0)
 posts = 0
@@ -74,6 +74,7 @@ def getHistory():
     return newaa[-1], str(newpa[-1]).translate(string.maketrans("",""), avoid468).lower()
 
 def autopost(lasta, lastp):
+    global posts
     global synant
     posting = True
     with suppress_stdout():
@@ -101,9 +102,9 @@ def autopost(lasta, lastp):
         print("Replying with " + postword + "..")
         postReply(468, "Autoposted", postword)
         posts += 1
-        print("Replied #" + posts + "!")
+        print("Replied #" + str(posts) + "!")
         waits = float(0)
-        avoida = username.lower()
+        avoida = ""
     else:
         avoida = lasta.lower()[:3]
         print("Not autoposting.")
@@ -125,8 +126,8 @@ while(True):
 
     if(username.lower() != lasta[:userlen].lower()):
         print("\n" + lasta + " - " + lastp)
-        print("lasta/avoida " + lasta[:3].lower() + "/" + avoida)
-        if(avoida != lasta[:3].lower()):
+        print("lastp/avoidp " + lastp + "/" + avoidp)
+        if(avoidp != lastp):
             autopost(lasta, lastp)
         time.sleep(30)
 
