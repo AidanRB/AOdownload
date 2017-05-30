@@ -73,7 +73,7 @@ def getHistory():
         newpa.append(postarray[i].get_text().split('\n')[1])
     return newaa[-1], str(newpa[-1]).translate(string.maketrans("",""), avoid468).lower()
 
-def autopost(lasta, lastp):
+def autopost(lasta, lastp, subject):
     global posts
     global synant
     posting = True
@@ -100,7 +100,7 @@ def autopost(lasta, lastp):
         postword = firstletter + postraw[1:]
         postword = postword.ljust(4) + '.'
         print("Replying with " + postword + "..")
-        postReply(468, "Autoposted", postword)
+        postReply(468, subject, postword)
         posts += 1
         print("Replied #" + str(posts) + "!")
         waits = float(0)
@@ -128,7 +128,7 @@ while(True):
         print("\n" + lasta + " - " + lastp)
         print("lastp/avoidp " + lastp + "/" + avoidp)
         if(avoidp != lastp):
-            autopost(lasta, lastp)
+            autopost(lasta, lastp, subject)
         time.sleep(30)
 
     time.sleep(30)
