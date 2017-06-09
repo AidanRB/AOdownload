@@ -28,7 +28,14 @@ def inputLogin():
     password = getpass.getpass("Password:\t")
 
 def gatherCredentials():
-    """This
+    """This function logs the user into the forum;
+    ie; it retrieves their cookies.
+
+    NOTE: inputLogin() or some other method of
+    retrieving user/pass MUST be executed FIRST.
+    This does NOT ask for user/pass.
+
+    Returns True if succeeded, False if failed.
     """
     DATA = {
     "url": "https://amblesideonline.org/forum/showthread.php?tid=468",
@@ -46,6 +53,14 @@ def gatherCredentials():
         return True
 
 def getPage(tid, pid):
+    """This function retrieves one page of posts.
+
+    Parameters are threadnumber, pagenumber.
+    This can be retrieved from the URL of the
+    page or through another command.
+
+    Returns authors[], times[], posts[].
+    """
     page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content, "html.parser")
     pageauthorshtml = page.find_all("div", class_="author")
     pagetimeshtml = page.find_all("div", class_="dateline")
@@ -60,6 +75,16 @@ def getPage(tid, pid):
     return pageauthors, pagetimes, pageposts
 
 def getPages(tid, startpid, endpid):
+    """This function make retrieval of multiple
+    pages easier, by repeatedly calling
+    getPage() and stitching the results.
+
+    Parameters are threadnumber, startpage,
+    endpage.  This can be retrieved from the
+    URL of the page or through another command.
+
+    Returns authors[], times[], posts[].
+    """
     startpid
     endpid
     pagesauthors = []
@@ -73,6 +98,16 @@ def getPages(tid, startpid, endpid):
     return pagesauthors, pagestimes, pagesposts
 
 def writeCsv(rows, filename):
+    """This function writes given data to a CSV.
+
+    Format is (["Item 1 row 2", "Item 2 row 1"]
+               ["Item 1 row 2", "Item 2 row 2"])
+    This can be easily obtained with output from getPage:
+        zip(output[0], output[1], output[2])
+        in the format author, date, post (columns).
+
+    Parameters are rows (nested arrays), filename.
+    """
     csvfile = open(filename, 'w')
     for row in rows:
         for item in row:
@@ -81,6 +116,13 @@ def writeCsv(rows, filename):
 
 
 def getResponseData(tid):
+    """This function gathers the data necessary to
+    respond to a thread, as well as the last ten posts.
+
+    The only parameter is the threadnumber.  It returns
+    postkey (passed to postReply()), subject (ditto),
+    authors[] (last ten), posts[] (last ten).
+    """
     pageBS = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies=login.cookies, data={'message': 'don\'t mind me haha'}).content, 'html.parser')
     keyinhtml = pageBS.find(attrs = {"name": "my_post_key"})
     subjectinhtml = pageBS.find(attrs = {"name": "subject"})
@@ -97,6 +139,19 @@ def getResponseData(tid):
     return keyinhtml['value'], subjectinhtml['value'], newaa, newpa
 
 def postReply(postkey, tid, subject, message):          #Returns posted (bool), longenough (bool), secsleft (int)
+    """This function posts a reply to the forum.
+
+    Parameters are postkey, threadnumber, subject, post.
+    The postkey is obtained from getResponseData()[0].
+    The default subject is also getResponseData()[1].
+
+    Output is posted (bool), longenough (bool), timeleft.
+    posted is True if post succeeded.
+    longenough is True if post was over four characters;
+    False if too short.
+    timeleft is the number of seconds left until the
+    user may post again.
+    """
     postdata = {'my_post_key': postkey, 'submit': 'Post Reply', 'tid': tid, 'action': 'do_newreply', 'message': message, 'subject': subject}
     postsoup = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies = login.cookies, data = postdata).content, "html.parser")
     posterrors = postsoup.find(class_="error")
