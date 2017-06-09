@@ -19,7 +19,7 @@ try:
     parser.add_argument("first", help="Page on which to start downloading", type=int)
     parser.add_argument("last", help="Page on which to stop downloading", type=int)
     parser.add_argument("username", help="Username to authenticate with")
-    parser.add_argument("out", help="Output type: Txt, Csv, or Print (on terminal)")
+    parser.add_argument("out", help="Output type: Txt, Csv, Print (on terminal), or Wa")
     parser.add_argument("--ppp", help="Custom posts per page; for use if you have a custom set.", type=int, default=10)
     args = parser.parse_args()
     threadnumber = args.thread
@@ -49,8 +49,8 @@ progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 
 #Output filename
 filename = ''
 
-#All characters
-allchars = string.maketrans("","")
+#Charsets
+avoid468 = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \n'
 
 #Gathers login information
 def gatherCookieJar():
@@ -118,10 +118,7 @@ def csvOpen():
 #Writes one page of posts to the opened CSV, using tab as seperator
 def csv1Page():
     for i in range(len(authors)):
-        if(threadnumber == 468):
-            csv.write(str(posts[i].get_text().split("\n")[0]).translate(string.maketrans("",""), string.punctuation).lower() + "\n")
-        else:
-            csv.write(times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
+        csv.write(times[i].get_text() + "\t" + authors[i].get_text() + "\t" + posts[i].get_text() + "\n")
 
 #Writes all requested pages to the opened CSV
 def csvMultiPage():
@@ -154,6 +151,25 @@ def txtMultiPage():
         getAll1Page(firstpage + pagenumber)
         txt1Page()
 
+def waOpen():
+    global wafile
+    global filename
+    filename = "thread" + str(threadnumber) + "pages" + str(firstpage) + "-" + str(lastpage) + ".wa.csv"
+    wafile = open(filename, 'w')
+
+def wa1Page():
+    for i in range(len(authors)):
+        wafile.write(str(posts[i].get_text().split("\n")[0]).translate(string.maketrans("",""), avoid468).lower() + "\n")
+
+def waMultiPage():
+    waOpen()
+    global pagenumber
+    for pagenumber in range(lastpage - firstpage + 1):
+        #print("Downloading page " + str(pagenumber + 1))
+        progressbar.next()
+        getAll1Page(firstpage + pagenumber)
+        wa1Page()
+
 #Logs in
 gatherCookieJar()
 
@@ -164,6 +180,8 @@ elif(type == "csv" or type == "c" or type == "2"):
     csvMultiPage()
 elif(type == "print" or type == "p" or type == "3"):
     printMultiPage()
+elif(type == "wa" or type == "w" or type == "4"):
+    waMultiPage()
 
 progressbar.finish()
 
