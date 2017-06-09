@@ -67,3 +67,29 @@ def writeCsv(rows, filename):
         for item in row:
             csvfile.write(item.replace("\n", "\\n") + "\t")
         csvfile.write("\n")
+
+
+def getResponseData(tid):
+    pageBS = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies=login.cookies, data={'message': 'don\'t mind me haha'}).content, 'html.parser')
+    keyinhtml = pageBS.find(attrs = {"name": "my_post_key"})
+    subjectinhtml = pageBS.find(attrs = {"name": "subject"})
+    authorarray = pageBS.find_all(class_="smalltext")
+    authorarray.pop(-1)
+    authorarray.reverse()
+    postarray = pageBS.find_all(class_="scaleimages")
+    postarray.reverse()
+    newaa = []
+    newpa = []
+    for i in range(len(postarray)):
+        newaa.append(authorarray[i].get_text()[10:])
+        newpa.append(postarray[i].get_text().split('\n')[1])
+    return keyinhtml['value'], subjectinhtml['value'], newaa, newpa
+
+def postReply(postkey, tid, subject, message):
+    postdata = {'my_post_key': postkey, 'submit': 'Post Reply', 'tid': tid, 'action': 'do_newreply', 'message': message, 'subject': subject}
+    postsoup = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies = login.cookies, data = postdata).content, "html.parser")
+    posterrors = postsoup.find_all(class_="error")
+    if len(posterrors) > 0:
+        return False, posterrors
+    else:
+        return True
