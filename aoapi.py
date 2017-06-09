@@ -13,13 +13,24 @@ username = ""
 password = ""
 
 def inputLogin():
+    """This function is an easy way to ask the
+    user for their username/password.
+
+    It takes no parameters, and defines the
+    username and password inside the module
+    from input on the terminal.  The password
+    is retrieved via getpass, so as to not
+    have it in plain text on the terminal.
+    """
     global username
     global password
     username = raw_input("Username:\t")
     password = getpass.getpass("Password:\t")
 
 def gatherCredentials():
-    DATA = {  #Data for logging in.
+    """This
+    """
+    DATA = {
     "url": "https://amblesideonline.org/forum/showthread.php?tid=468",
     "action": "do_login",
     "submit": "Login",
@@ -85,11 +96,17 @@ def getResponseData(tid):
         newpa.append(postarray[i].get_text().split('\n')[1])
     return keyinhtml['value'], subjectinhtml['value'], newaa, newpa
 
-def postReply(postkey, tid, subject, message):
+def postReply(postkey, tid, subject, message):          #Returns posted (bool), longenough (bool), secsleft (int)
     postdata = {'my_post_key': postkey, 'submit': 'Post Reply', 'tid': tid, 'action': 'do_newreply', 'message': message, 'subject': subject}
     postsoup = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies = login.cookies, data = postdata).content, "html.parser")
-    posterrors = postsoup.find_all(class_="error")
-    if len(posterrors) > 0:
-        return False, posterrors
+    posterrors = postsoup.find(class_="error")
+    if posterrors != None:
+        posterrors = posterrors.get_text().split('\n')
+        if len(posterrors[3]) == 74:
+            return False, False, 0
+        elif len(posterrors[4]) == 0:
+            return False, True, int(posterrors[3][91:93])
+        else:
+            return False, False, int(posterrors[3][91:93])
     else:
-        return True
+        return True, True, 0
