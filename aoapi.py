@@ -1,3 +1,5 @@
+"""Unofficial third-party API for interacting with the AO forums."""
+
 import requests, getpass, sys
 from bs4 import BeautifulSoup
 
@@ -75,9 +77,10 @@ def getPage(tid, pid):
     return pageauthors, pagetimes, pageposts
 
 def getPages(tid, startpid, endpid):
-    """This function make retrieval of multiple
+    """This function makes retrieval of multiple
     pages easier, by repeatedly calling
-    getPage() and stitching the results.
+    getPage() and stitching the results
+    together.
 
     Parameters are threadnumber, startpage,
     endpage.  This can be retrieved from the
@@ -138,7 +141,7 @@ def getResponseData(tid):
         newpa.append(postarray[i].get_text().split('\n')[1])
     return keyinhtml['value'], subjectinhtml['value'], newaa, newpa
 
-def postReply(postkey, tid, subject, message):          #Returns posted (bool), longenough (bool), secsleft (int)
+def postReply(postkey, tid, subject, message):
     """This function posts a reply to the forum.
 
     Parameters are postkey, threadnumber, subject, post.
@@ -165,3 +168,27 @@ def postReply(postkey, tid, subject, message):          #Returns posted (bool), 
             return False, False, int(posterrors[3][91:93])
     else:
         return True, True, 0
+
+def getSubs(page):
+    page = 1
+    subSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/usercp.php?action=subscriptions&page=" + str(page), cookies = login.cookies).content, "html.parser")
+    threads = subSoup.select("table.tborder")[1].select("tr")
+    threads.pop(0)
+    threads.pop(0)
+    threads.pop(-1)
+    tnums = []
+    tnames = []
+    tnoro = []
+    treplies = []
+    tviews = []
+    ttimes = []
+    tposters = []
+    for thread in threads:
+        tnums.append(int(thread.select("td")[2].select("a")[0].get("href")[19:].split('&')[0])) #tid
+        tnames.append(thread.select("td")[2].select("a")[-1].get_text()) #name
+        tnoro.append(str(thread.select("td")[2].select("a")[-1].get("class"))[11:14]) #new or not
+        treplies.append(int(thread.select("td")[3].get_text().replace(',', ''))) #replies
+        tviews.append(int(thread.select("td")[4].get_text().replace(',', ''))) #views
+        ttimes.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[0]) #last post time
+        tposters.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[1][11:]) #last poster
+    return tnums, tnames, tnoro, treplies, tviews, ttimes, tposters
