@@ -1,8 +1,8 @@
 <!doctype html>
-<title>Thread</title>
+<title>Thread {{tid}}, page {{page}}</title>
 thread {{tid}} page {{page}}
 
 <ul>
-    {% for i in range(10) %}
-        <li>{{ authors[i] }} - {{ times[i] }} - {{ posts[i] }}
+    {% for i in range(length) %}
+        <li><h1>{{ authors[i] }}</h1><h4>{{ times[i] }}</h4><br>{% for line in posts[i] %} {{ line }} <br> {% endfor %}</li>
     {% endfor %}
