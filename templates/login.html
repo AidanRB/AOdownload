@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login | AOforms</title>
+
+    <body>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message[1] }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="post" action="">
+            Username:<br>
+            <input type="text" name="username" value="">
+            <br> Password:
+            <br>
+            <input type="password" name="password" value="">
+            <br><br>
+            <input type="submit" value="Submit">
+
+    </body>
+
+</html>
