@@ -67,14 +67,15 @@ def getPage(tid, pid):
     pageauthorshtml = page.find_all("div", class_="author")
     pagetimeshtml = page.find_all("div", class_="dateline")
     pagepostshtml = page.find_all("div", class_="message")
+    pagetitle = page.find_all("title")
     pageauthors = []
     pagetimes = []
     pageposts = []
     for post in zip(pageauthorshtml, pagetimeshtml, pagepostshtml):
         pageauthors.append(post[0].get_text())
         pagetimes.append(post[1].get_text())
-        pageposts.append(post[2].get_text())
-    return pageauthors, pagetimes, pageposts
+        pageposts.append(str(post[2])[21:-6])
+    return pageauthors, pagetimes, pageposts, pagetitle[0].get_text().split("-")[1][1:]
 
 def getPages(tid, startpid, endpid):
     """This function makes retrieval of multiple
@@ -88,17 +89,16 @@ def getPages(tid, startpid, endpid):
 
     Returns authors[], times[], posts[].
     """
-    startpid
-    endpid
+    title = ""
     pagesauthors = []
     pagestimes = []
     pagesposts = []
     for currentpagenum in range(endpid - startpid + 1):
-        currentpageauthors, currentpagetimes, currentpageposts = getPage(tid, currentpagenum + startpid)
+        currentpageauthors, currentpagetimes, currentpageposts, title = getPage(tid, currentpagenum + startpid)
         pagesauthors += currentpageauthors
         pagestimes += currentpagetimes
         pagesposts += currentpageposts
-    return pagesauthors, pagestimes, pagesposts
+    return pagesauthors, pagestimes, pagesposts, title
 
 def writeCsv(rows, filename):
     """This function writes given data to a CSV.

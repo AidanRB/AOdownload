@@ -1,8 +1,11 @@
 <!doctype html>
-<title>Thread {{tid}}, page {{page}}</title>
-thread {{tid}} page {{page}}
+<title>{{title}} | AOforms</title>
+<h1>{{title}}</h1>
+pages {{page}}
 
 <ul>
     {% for i in range(length) %}
-        <li><h1>{{ authors[i] }}</h1><h4>{{ times[i] }}</h4><br>{% for line in posts[i] %} {{ line }} <br> {% endfor %}</li>
+        <hr>
+        <h1>{{ authors[i] }}</h1><h4>{{ times[i] }}</h4><br>{% autoescape false %} {{ posts[i] }} {% endautoescape %}<br>
     {% endfor %}
+
