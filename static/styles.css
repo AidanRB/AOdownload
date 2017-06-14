@@ -1,0 +1,87 @@
+html {
+    background: #212121;
+    color: white;
+    font-family: noto sans cjk jp, roboto, open sans, sans;
+}
+
+.threadname {
+    letter-spacing: 3px;
+    font-weight: lighter;
+    font-size: 250%;
+    text-align: center;
+}
+
+.page {
+    font-size: 75%;
+    text-align: center;
+    transform: scale(1, 0.9);
+    font-style: italic;
+    font-weight: bold;
+}
+
+.postcontainer {
+    margin: 30px;
+    margin-bottom: 75px;
+    margin-top: 150px;
+/*    background: #004D40;
+    border-radius: 2px;
+    box-shadow: 0 16px 8px 0px black;*/
+}
+
+.postcontainer:first-of-type {
+    margin-top: 75px;
+}
+
+.postdivider {
+    position: absolute;
+    content: "";
+    background: white;
+    height: 1px;
+    display: block;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    border: 0;
+}
+
+.author {
+    padding: 10px;
+/*    background: #009688;
+    border-radius: 2px 0px 0px 0px;*/
+    margin-bottom: 0px;
+    width: fit-content;
+    font-size: 150%;
+}
+
+.time {
+    padding: 10px;
+/*    background: #009688;
+    border-radius: 0px 2px 0px 0px;*/
+    width: fit-content;
+    text-align: end;
+}
+
+.post {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.lineshadow {
+    display: block;
+    height: 10px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(black, #004D40);
+    background: #212121;
+}
+
+table {
+    border-spacing: 0px;
+    width: 100%
+}
+
+.posthead {
+/*    background: #009688;
+    border-radius: 20px 20px 0px 0px;*/
+}

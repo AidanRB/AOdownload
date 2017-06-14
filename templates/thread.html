@@ -1,11 +1,34 @@
-<!doctype html>
-<title>{{title}} | AOforms</title>
-<h1>{{title}}</h1>
-pages {{page}}
+<!DOCTYPE html>
+<html>
 
-<ul>
-    {% for i in range(length) %}
-        <hr>
-        <h1>{{ authors[i] }}</h1><h4>{{ times[i] }}</h4><br>{% autoescape false %} {{ posts[i] }} {% endautoescape %}<br>
-    {% endfor %}
+<head>
+    <title>{{title}} | AOforms</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
+</head>
 
+<body>
+
+<h1 class="threadname">{{title}}</h1>
+<p class="page">{{page}}<p>
+
+{% for i in range(length) %}
+    <hr class="postdivider">
+    <div class="postcontainer">
+        <table class="posthead">
+            <tbody class="posthead">
+                <tr class="posthead">
+                    <td class="author">{{ authors[i] }}</td>
+                    <td class="time">{{ times[i] }}</td>
+                <tr />
+            </tbody>
+        </table>
+        <hr class="lineshadow">
+        {% autoescape false %}
+        <p class="post"> {{ posts[i] }} </p>
+        {% endautoescape %}
+    </div>
+{% endfor %}
+
+</body>
+
+</html>

@@ -32,11 +32,18 @@ def loginpage(username="", password=""):
 
     return render_template("login.html", form=form)
 
+@app.route("/thread/<int:tid>/<int:page>")
+def showThread(tid, page):
+    authors, times, posts, title = aoapi.getPage(tid, page)
+    length = len(posts)
+    return render_template("thread.html", title=title, tid=tid, page="PAGE " + str(page), authors=authors, times=times, posts=posts, length=length)
+
 @app.route("/thread/<int:tid>/<int:pagestart>/<int:pageend>")
-def showThread(tid, pagestart, pageend):
+def showThreads(tid, pagestart, pageend):
     authors, times, posts, title = aoapi.getPages(tid, pagestart, pageend)
     length = len(posts)
-    return render_template("thread.html", title=title, tid=tid, page=str(pagestart) + "-" + str(pageend), authors=authors, times=times, posts=posts, length=length)
+    return render_template("thread.html", title=title, tid=tid, page="PAGES " +
+        str(pagestart) + "-" + str(pageend), authors=authors, times=times, posts=posts, length=length)
 
 if __name__ == "__main__":
     app.run()

@@ -10,3 +10,6 @@
 !SubToPost.py
 !SubToPost-beta.py
 !aoapi.py
+!flasktest.py
+!templates/
+!static/
