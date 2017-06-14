@@ -13,3 +13,4 @@
 !flasktest.py
 !templates/
 !static/
+!index.html
