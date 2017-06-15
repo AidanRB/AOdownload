@@ -2,11 +2,23 @@
 <html>
 
 <head>
+    <meta name="theme-color" content="#212121">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{title}} | AOforms</title>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
 </head>
 
 <body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message[1] }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 
 <h1 class="threadname">{{title}}</h1>
 <p class="page">{{page}}<p>
@@ -22,9 +34,8 @@
                 <tr />
             </tbody>
         </table>
-        <hr class="lineshadow">
         {% autoescape false %}
-        <p class="post"> {{ posts[i] }} </p>
+        <span class="post"> {{ posts[i] }} </p>
         {% endautoescape %}
     </div>
 {% endfor %}
