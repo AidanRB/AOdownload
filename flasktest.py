@@ -41,7 +41,7 @@ def showThread(tid, page):
 
 @app.route("/thread/<int:tid>/<int:pagestart>/<int:pageend>")
 def showThreads(tid, pagestart, pageend):
-    authors, times, posts, title = aoapi.getPages(tid, pagestart, pageend)
+    authors, times, posts, title, pages, navtitles, numnums = aoapi.getPages(tid, pagestart, pageend)
     length = len(posts)
     return render_template("thread.html", title=title, tid=tid, page="PAGES " +
         str(pagestart) + "-" + str(pageend), authors=authors, times=times, posts=posts, length=length)

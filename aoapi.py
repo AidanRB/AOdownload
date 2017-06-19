@@ -13,6 +13,7 @@ if True:
 
 username = ""
 password = ""
+postkey = ""
 
 def inputLogin():
     """This function is an easy way to ask the
@@ -48,10 +49,13 @@ def gatherCredentials():
     "quick_password": password,
     }
     global login
+    global postkey
     login = (requests.post("https://amblesideonline.org/forum/member.php?action=login", data=DATA))
     if len(BeautifulSoup(login.content, "html.parser").find_all(class_="error")) > 0:
         return False
     else:
+        keyBS = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=11467&processed=1", cookies=login.cookies, data={'message': 'don\'t mind me haha'}).content, 'html.parser')
+        postkey = keyBS.find(attrs = {"name": "my_post_key"})['value']
         return True
 
 def getPage(tid, pid):
@@ -75,7 +79,16 @@ def getPage(tid, pid):
         pageauthors.append(post[0].get_text())
         pagetimes.append(post[1].get_text())
         pageposts.append(str(post[2])[21:-6])
-    return pageauthors, pagetimes, pageposts, pagetitle[0].get_text().split("-")[1][1:]
+    pages = page.find_all(class_="multipage")[0].get_text().split(" ")[-2]
+    navigation = page.find_all(class_="navigation")[0]
+    navigators = navigation.find_all("a")
+    navigators.pop(0)
+    navtitles = []
+    navnums = []
+    for navigator in navigators:
+        navtitles.append(navigator.get_text())
+        navnums.append(int(navigator.get("href")[58:-5]))
+    return pageauthors, pagetimes, pageposts, pagetitle[0].get_text().split("-")[1][1:], pages, navtitles, navnums
 
 def getPages(tid, startpid, endpid):
     """This function makes retrieval of multiple
@@ -117,14 +130,13 @@ def writeCsv(rows, filename):
             csvfile.write(item.replace("\n", "\\n") + "\t")
         csvfile.write("\n")
 
-
 def getResponseData(tid):
     """This function gathers the data necessary to
     respond to a thread, as well as the last ten posts.
 
     The only parameter is the threadnumber.  It returns
-    postkey (passed to postReply()), subject (ditto),
-    authors[] (last ten), posts[] (last ten).
+    subject (passed to postReply()) authors[] (last ten),
+    posts[] (last ten).
     """
     pageBS = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies=login.cookies, data={'message': 'don\'t mind me haha'}).content, 'html.parser')
     keyinhtml = pageBS.find(attrs = {"name": "my_post_key"})
@@ -139,14 +151,13 @@ def getResponseData(tid):
     for i in range(len(postarray)):
         newaa.append(authorarray[i].get_text()[10:])
         newpa.append(postarray[i].get_text().split('\n')[1])
-    return keyinhtml['value'], subjectinhtml['value'], newaa, newpa
+    return subjectinhtml['value'], newaa, newpa
 
-def postReply(postkey, tid, subject, message):
+def postReply(tid, subject, message):
     """This function posts a reply to the forum.
 
-    Parameters are postkey, threadnumber, subject, post.
-    The postkey is obtained from getResponseData()[0].
-    The default subject is also getResponseData()[1].
+    Parameters are threadnumber, subject, post.
+    The default subject is getResponseData()[1].
 
     Output is posted (bool), longenough (bool), timeleft.
     posted is True if post succeeded.
@@ -155,6 +166,7 @@ def postReply(postkey, tid, subject, message):
     timeleft is the number of seconds left until the
     user may post again.
     """
+    global postkey
     postdata = {'my_post_key': postkey, 'submit': 'Post Reply', 'tid': tid, 'action': 'do_newreply', 'message': message, 'subject': subject}
     postsoup = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies = login.cookies, data = postdata).content, "html.parser")
     posterrors = postsoup.find(class_="error")
