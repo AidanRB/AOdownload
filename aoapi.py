@@ -107,11 +107,11 @@ def getPages(tid, startpid, endpid):
     pagestimes = []
     pagesposts = []
     for currentpagenum in range(endpid - startpid + 1):
-        currentpageauthors, currentpagetimes, currentpageposts, title = getPage(tid, currentpagenum + startpid)
+        currentpageauthors, currentpagetimes, currentpageposts, title, pages, navtitles, navnums = getPage(tid, currentpagenum + startpid)
         pagesauthors += currentpageauthors
         pagestimes += currentpagetimes
         pagesposts += currentpageposts
-    return pagesauthors, pagestimes, pagesposts, title
+    return pagesauthors, pagestimes, pagesposts, title, pages, navtitles, navnums
 
 def writeCsv(rows, filename):
     """This function writes given data to a CSV.
