@@ -13,4 +13,5 @@
 !forumflask.py
 !templates/
 !static/
-DTAPI.py!index.html
+!index.html
+DTAPI.py
