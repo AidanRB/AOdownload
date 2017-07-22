@@ -16,17 +16,86 @@ progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 
 filename = "thread" + str(threadnum) + "pages" + str(firstpage) + "-" + str(lastpage) + ".html"
 outfile = open(filename, "w")
 
-outfile.write("<html><head><style>\nhtml {\n    background: #212121;\n    color: white;\n    font-family: noto sans cjk jp, roboto, open sans, sans;\n}\n\n.threadname {\n    letter-spacing: 3px;\n    font-weight: lighter;\n    font-size: 250%;\n    text-align: center;\n}\n\n.pages {\n    font-size: 75%;\n    text-align: center;\n    transform: scale(1, 0.9);\n    font-style: italic;\n    font-weight: bold;\n}\n\n.postcontainer {\n    margin: 10px;\n    margin-bottom: 75px;\n    margin-top: 150px;\n    font-weight: normal;\n}\n\n.postcontainer:first-of-type {\n    margin-top: 75px;\n}\n\n.postdivider {\n    position: absolute;\n    content: \"\";\n    background: white;\n    height: 1px;\n    display: block;\n    left: 50%;\n    width: 200px;\n    margin-left: -100px;\n    border: 0;\n}\n\n.author {\n    padding: 10px;\n    margin-bottom: 0px;\n    width: fit-content;\n    font-size: 200%;\n}\n\n.post {\n    margin-top: 10px;\n    padding: 10px;\n    font-size: 100%;\n}\n</style></head>\n<body>\n")
+outfile.write("""<html> <head> <style>
+    html {
+        background: #212121;
+        color: white;
+        font-family: noto sans cjk jp, roboto, open sans, sans;
+    }
+
+    .threadname {
+        letter-spacing: 3px;
+        font-weight: lighter;
+        font-size: 250%;
+        text-align: center;
+    }
+
+    .page {
+        font-style: italic;
+        transform: scale(1, 0.9);
+        text-align: center;
+        font-weight: bold;
+        position: relative;
+    }
+
+    .pages {
+        font-size: 75%;
+        text-align: center;
+        transform: scale(1, 0.9);
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .postcontainer {
+        margin: 10px;
+        margin-bottom: 75px;
+        margin-top: 75px;
+        font-weight: normal;
+    }
+
+    .postcontainer:first-of-type {
+        margin-top: 75px;
+    }
+
+    .postdivider {
+        position: relative;
+        content: "";
+        background: white;
+        height: 1px;
+        display: block;
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        border: 0;
+    }
+
+    .author {
+        padding: 10px;
+        margin-bottom: 0px;
+        width: fit-content;
+        font-size: 200%;
+    }
+
+    .post {
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 100%;
+    }
+    </style> </head>
+    <body>
+    """)
 pageauthors, pagetimes, pageposts, title, pages, navtitles, navnums = getPage(threadnum, firstpage)
-outfile.write("<h1 class=\"threadname\">" + title + "</h1><br>\n<h4 class=\"pages\">Pages " + str(firstpage) + "-" + str(lastpage) + "<h4><br><br>\n\n")
+outfile.write("<h1 class=\"threadname\">" + title + "</h1>\n<h4 class=\"pages\">Pages " + str(firstpage) + "-" + str(lastpage) + "<h4>\n\n")
 
 for currentnum in range(lastpage - firstpage + 1):
     pageauthors, pagetimes, pageposts, title, pages, navtitles, navnums = getPage(threadnum, currentnum + firstpage)
-    outfile.write("<h2 class=\"page\">Page " + str(currentnum + firstpage) + "</h2><br>\n\n")
+    outfile.write("<h2 class=\"page\">Page " + str(currentnum + firstpage) + "</h2>\n\n</div> </div><hr class=\"postdivider\">\n\n")
     for post in zip(pageauthors, pageposts):
-        outfile.write("<div class=\"postcontainer\"><h3 class=\"author\">" + post[0] + "</h3><br><div class=\"post\">\n" + post[1].replace("\n", "<br>\n") + "\n</div></div><br><br><br><hr class=\"postdivider\">\n\n")
+        outfile.write("<div class=\"postcontainer\"> <h3 class=\"author\">" +
+            post[0] + "</h3> <br> <div class=\"post\">\n" +
+            post[1] + "\n</div> </div> <hr class=\"postdivider\">\n\n")
     progressbar.next()
-        
+
 outfile.write("</body>\n</html>\n")
 outfile.close()
 progressbar.finish()
