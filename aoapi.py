@@ -205,7 +205,7 @@ def getSubs(page):
         tposters.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[1][11:]) #last poster
     return tnums, tnames, tnoro, treplies, tviews, ttimes, tposters
 
-getForum(fid, page):
+def getForum(fid, page):
     fid = 82
     page = 1
     forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
