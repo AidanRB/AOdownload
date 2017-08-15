@@ -161,8 +161,10 @@ def getResponseData(tid):
     subject (passed to postReply()) authors[] (last ten),
     posts[] (last ten).
     """
+    global postkey
+    if (postkey == ""):
+        return False
     pageBS = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies=login.cookies, data={'message': 'don\'t mind me haha'}).content, 'html.parser')
-    keyinhtml = pageBS.find(attrs = {"name": "my_post_key"})
     subjectinhtml = pageBS.find(attrs = {"name": "subject"})
     authorarray = pageBS.find_all(class_="smalltext")
     authorarray.pop(-1)
@@ -190,6 +192,8 @@ def postReply(tid, subject, message):
     user may post again.
     """
     global postkey
+    if (postkey == ""):
+        return False
     postdata = {'my_post_key': postkey, 'submit': 'Post Reply', 'tid': tid, 'action': 'do_newreply', 'message': message, 'subject': subject}
     postsoup = BeautifulSoup(requests.post("https://amblesideonline.org/forum/newreply.php?tid=" + str(tid) + "&processed=1", cookies = login.cookies, data = postdata).content, "html.parser")
     posterrors = postsoup.find(class_="error")
@@ -205,6 +209,9 @@ def postReply(tid, subject, message):
         return True, True, 0
 
 def getSubs(page):
+    global postkey
+    if (postkey == ""):
+        return False
     page = 1
     subSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/usercp.php?action=subscriptions&page=" + str(page), cookies = login.cookies).content, "html.parser")
     threads = subSoup.select("table.tborder")[1].select("tr")
