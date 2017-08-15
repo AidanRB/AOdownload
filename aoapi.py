@@ -67,7 +67,14 @@ def getPage(tid, pid):
 
     Returns authors[], times[], posts[].
     """
-    page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content, "html.parser")
+    try:
+        login
+    except NameError:
+        page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html").content, "html.parser")
+    else:
+        page = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?thread-" + str(tid) + "-" + str(pid) + ".html", cookies=login.cookies).content, "html.parser")
+    if(page.find_all("div", class_="error") != []):
+        return False
     pageauthorshtml = page.find_all("div", class_="author")
     pagetimeshtml = page.find_all("div", class_="dateline")
     pagepostshtml = page.find_all("div", class_="message")
