@@ -58,6 +58,16 @@ def gatherCredentials():
         postkey = keyBS.find(attrs = {"name": "my_post_key"})['value']
         return True
 
+def logout():
+    global username
+    global password
+    global postkey
+    global login
+    username = ""
+    password = ""
+    postkey = ""
+    del login
+
 def getPage(tid, pid):
     """This function retrieves one page of posts.
 
