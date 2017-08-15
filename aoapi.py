@@ -59,14 +59,17 @@ def gatherCredentials():
         return True
 
 def logout():
-    global username
-    global password
-    global postkey
-    global login
-    username = ""
-    password = ""
-    postkey = ""
-    del login
+    try:
+        global username
+        global password
+        global postkey
+        global login
+        username = ""
+        password = ""
+        postkey = ""
+        del login
+    except:
+        pass
 
 def getPage(tid, pid):
     """This function retrieves one page of posts.
@@ -123,11 +126,14 @@ def getPages(tid, startpid, endpid):
     pagesauthors = []
     pagestimes = []
     pagesposts = []
-    for currentpagenum in range(endpid - startpid + 1):
-        currentpageauthors, currentpagetimes, currentpageposts, title, pages, navtitles, navnums = getPage(tid, currentpagenum + startpid)
-        pagesauthors += currentpageauthors
-        pagestimes += currentpagetimes
-        pagesposts += currentpageposts
+    try:
+        for currentpagenum in range(endpid - startpid + 1):
+            currentpageauthors, currentpagetimes, currentpageposts, title, pages, navtitles, navnums = getPage(tid, currentpagenum + startpid)
+            pagesauthors += currentpageauthors
+            pagestimes += currentpagetimes
+            pagesposts += currentpageposts
+    except:
+        return False
     return pagesauthors, pagestimes, pagesposts, title, pages, navtitles, navnums
 
 def writeCsv(rows, filename):
