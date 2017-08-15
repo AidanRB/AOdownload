@@ -204,3 +204,10 @@ def getSubs(page):
         ttimes.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[0]) #last post time
         tposters.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[1][11:]) #last poster
     return tnums, tnames, tnoro, treplies, tviews, ttimes, tposters
+
+getForum(fid, page):
+    fid = 82
+    page = 1
+    forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
+    pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
+    announcements = forumSoup.find("div", class_="announcementlist")
