@@ -78,7 +78,8 @@ def getPage(tid, pid):
     This can be retrieved from the URL of the
     page or through another command.
 
-    Returns authors[], times[], posts[].
+    Returns authors[], times[], posts[], threadname,
+    pages, navtitles, navthreadnums.
     """
     try:
         login
@@ -120,7 +121,8 @@ def getPages(tid, startpid, endpid):
     endpage.  This can be retrieved from the
     URL of the page or through another command.
 
-    Returns authors[], times[], posts[].
+    Returns authors[], times[], posts[], threadname,
+    pages, navtitles, navthreadnums.
     """
     title = ""
     pagesauthors = []
@@ -236,8 +238,28 @@ def getSubs(page):
     return tnums, tnames, tnoro, treplies, tviews, ttimes, tposters
 
 def getForum(fid, page):
-    fid = 82
-    page = 1
-    forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
-    pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
+    try:
+        login
+    except NameError:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
+    else:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
+    if(forumSoup.find_all("div", class_="error") != []):
+        return False
+    try:
+        pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
+    except:
+        pages = 1
+    navigation = forumSoup.find_all(class_="navigation")[0]
+    navigators = navigation.find_all("a")
+    navigators.pop(0)
+    navtitles = []
+    navnums = []
+    for navigator in navigators:
+        navtitles.append(navigator.get_text())
+        navnums.append(int(navigator.get("href")[58:-5]))
+    forums = forumSoup.find("div", class_="forumlist")
+    if (forums != None):
+        forums = forums.find_all("ol", recursive=False)
     announcements = forumSoup.find("div", class_="announcementlist")
+    return pages, navtitles, navnums, forums
