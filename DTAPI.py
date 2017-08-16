@@ -18,8 +18,8 @@ outfile = open(filename, "w")
 
 outfile.write("""<html> <head> <style>
     html {
-        background: #212121;
-        color: white;
+        background: bgcolor;
+        color: fgcolor;
         font-family: noto sans cjk jp, roboto, open sans, sans;
     }
 
@@ -28,14 +28,6 @@ outfile.write("""<html> <head> <style>
         font-weight: lighter;
         font-size: 250%;
         text-align: center;
-    }
-
-    .page {
-        font-style: italic;
-        transform: scale(1, 0.9);
-        text-align: center;
-        font-weight: bold;
-        position: relative;
     }
 
     .pages {
@@ -48,19 +40,19 @@ outfile.write("""<html> <head> <style>
 
     .postcontainer {
         margin: 10px;
-        margin-bottom: 75px;
-        margin-top: 75px;
+        margin-bottom: 0px;
+        margin-top: 20px;
         font-weight: normal;
     }
 
     .postcontainer:first-of-type {
-        margin-top: 75px;
+        margin-top: 10px;
     }
 
     .postdivider {
-        position: relative;
+        position: absolute;
         content: "";
-        background: white;
+        background: fgcolor;
         height: 1px;
         display: block;
         left: 50%;
@@ -81,11 +73,20 @@ outfile.write("""<html> <head> <style>
         padding: 10px;
         font-size: 100%;
     }
+
+    .page {
+        padding-top: 20px;
+        font-size: 75%;
+        text-align: center;
+        transform: scale(1, 0.9);
+        font-style: italic;
+        font-weight: bold;
+    }
     </style> </head>
     <body>
-    """)
+    """.replace("bgcolor", "white").replace("fgcolor", "black"))
 pageauthors, pagetimes, pageposts, title, pages, navtitles, navnums = getPage(threadnum, firstpage)
-outfile.write("<h1 class=\"threadname\">" + title + "</h1>\n<h4 class=\"pages\">Pages " + str(firstpage) + "-" + str(lastpage) + "<h4>\n\n")
+outfile.write("<h1 class=\"threadname\">" + title + "</h1>\n<h4 class=\"pages\">Pages " + str(firstpage) + "-" + str(lastpage) + "<h4>\n")
 
 for currentnum in range(lastpage - firstpage + 1):
     pageauthors, pagetimes, pageposts, title, pages, navtitles, navnums = getPage(threadnum, currentnum + firstpage)
@@ -93,7 +94,7 @@ for currentnum in range(lastpage - firstpage + 1):
     for post in zip(pageauthors, pageposts):
         outfile.write("<div class=\"postcontainer\"> <h3 class=\"author\">" +
             post[0] + "</h3> <br> <div class=\"post\">\n" +
-            post[1] + "\n</div> </div> <hr class=\"postdivider\">\n\n")
+            post[1] + "\n</div> </div> <br/> <hr class=\"postdivider\">\n\n")
     progressbar.next()
 
 outfile.write("</body>\n</html>\n")
