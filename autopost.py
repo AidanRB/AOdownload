@@ -18,6 +18,7 @@ avoidp = ""
 userlen = len(username)
 waits = float(0)
 posts = 0
+wlen = 10
 
 @contextmanager
 def suppress_stdout():
@@ -129,6 +130,6 @@ while(True):
         print("lastp/avoidp " + lastp + "/" + avoidp)
         if(avoidp != lastp):
             autopost(lasta, lastp, subject)
-        time.sleep(30)
+        time.sleep(wlen/2)
 
-    time.sleep(30)
+    time.sleep(wlen/2)
