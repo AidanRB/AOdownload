@@ -14,4 +14,4 @@
 !templates/
 !static/
 !index.html
-DTAPI.py
+!DTAPI.py
