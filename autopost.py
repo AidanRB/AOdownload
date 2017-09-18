@@ -16,8 +16,9 @@ avoid468 = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \n'
 synant = True
 avoidp = ""
 userlen = len(username)
-waits = float(0)
 posts = 0
+wlen = 10
+starttime = time.time()
 
 @contextmanager
 def suppress_stdout():
@@ -103,7 +104,6 @@ def autopost(lasta, lastp, subject):
         postReply(468, subject, postword)
         posts += 1
         print("Replied #" + str(posts) + "!")
-        waits = float(0)
         avoida = ""
     else:
         avoida = lasta.lower()[:3]
@@ -121,14 +121,13 @@ while(True):
 
     lasta, lastp = getHistory()
 
-    print("### " + str(waits/float(2)) + "m")
-    waits += 1
+    print("### " + str(round((time.time() - starttime) / 60, 2)) + "m")
 
     if(username.lower() != lasta[:userlen].lower()):
         print("\n" + lasta + " - " + lastp)
         print("lastp/avoidp " + lastp + "/" + avoidp)
         if(avoidp != lastp):
             autopost(lasta, lastp, subject)
-        time.sleep(30)
+        time.sleep(wlen/2)
 
-    time.sleep(30)
+    time.sleep(wlen/2)
