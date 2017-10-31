@@ -241,7 +241,7 @@ def getForum(fid, page):
     try:
         login
     except NameError:
-        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html").content, "html.parser")
     else:
         forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
     if(forumSoup.find_all("div", class_="error") != []):

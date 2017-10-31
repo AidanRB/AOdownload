@@ -1,8 +1,9 @@
 import aoapi
+import getpass
 from bs4 import BeautifulSoup
 
-aoapi.username = "arb"
-aoapi.password = "Don't short-@mb13!"
+aoapi.username = raw_input("user:")
+aoapi.password = getpass.getpass("pass:")
 print(aoapi.gatherCredentials())
 
 def getSubfs(forumhtml):
