@@ -255,7 +255,7 @@ def getForumType(fid):
     try:
         pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
     except:
-        pages = 1
+        pages = "1"
     navigation = forumSoup.find_all(class_="navigation")[0]
     navigators = navigation.find_all("a")
     navigators.pop(0)
@@ -270,19 +270,19 @@ def getForumType(fid):
         threads = False
     return pages, navtitles, navnums, threads
 
-def getForum(fid, page):
+def getForumF(fid, page):
     try:
         login
     except NameError:
-        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html").content, "html.parser")
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html").content, "html.parser")
     else:
-        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html", cookies = login.cookies).content, "html.parser")
     if(forumSoup.find_all("div", class_="error") != []):
         return False
     try:
         pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
     except:
-        pages = 1
+        pages = "1"
     navigation = forumSoup.find_all(class_="navigation")[0]
     navigators = navigation.find_all("a")
     navigators.pop(0)
@@ -291,8 +291,23 @@ def getForum(fid, page):
     for navigator in navigators:
         navtitles.append(navigator.get_text())
         navnums.append(int(navigator.get("href")[58:-5]))
-    forums = forumSoup.find("div", class_="forumlist")
-    if (forums != None):
-        forums = forums.find_all("ol", recursive=False)
-    announcements = forumSoup.find("div", class_="announcementlist")
-    return pages, navtitles, navnums, forums
+    forumlist = forumSoup.find_all(class_="forumlist")
+    if(forumSoup.find_all(class_="forumlist") == []):
+        threads = True
+    else:
+        threads = False
+    if(threads):
+        return pages, navtitles, navnums, False
+    htmls = []
+    for item in forumSoup.find_all("li"):
+        if(item.find_all("strong") == []):
+            htmls.append(item)
+    nums = []
+    names = []
+    for item in htmls:
+        soup = BeautifulSoup(str(item))
+        a = soup.find("a")
+        link = a["href"]
+        nums.append(link[58:-5])
+        names.append(a.get_text())
+    return pages, navtitles, navnums, nums, names
