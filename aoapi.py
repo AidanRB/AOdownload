@@ -211,6 +211,9 @@ def postReply(tid, subject, message):
         return True, True, 0
 
 def getSubs(page):
+    """Gets the user's subscribed threads.  Input is
+    the page, output is tnums, tnames, new/old, treplies,
+    tviews, ttimes, tposters, where t=thread."""
     global postkey
     if (postkey == ""):
         return False
@@ -236,6 +239,36 @@ def getSubs(page):
         ttimes.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[0]) #last post time
         tposters.append(thread.select("td")[5].select("span")[0].get_text().split('\n')[1][11:]) #last poster
     return tnums, tnames, tnoro, treplies, tviews, ttimes, tposters
+
+def getForumType(fid):
+    """Determines the type of a forum.  Returns:
+    pages, navtitles, navnums, threads/subforums
+    (True if threads)"""
+    try:
+        login
+    except NameError:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html").content, "html.parser")
+    else:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html", cookies = login.cookies).content, "html.parser")
+    if(forumSoup.find_all("div", class_="error") != []):
+        return False
+    try:
+        pages = forumSoup.find("div", class_="multipage").get_text().split(" ")[-2]
+    except:
+        pages = 1
+    navigation = forumSoup.find_all(class_="navigation")[0]
+    navigators = navigation.find_all("a")
+    navigators.pop(0)
+    navtitles = []
+    navnums = []
+    for navigator in navigators:
+        navtitles.append(navigator.get_text())
+        navnums.append(int(navigator.get("href")[58:-5]))
+    if(forumSoup.find_all(class_="forumlist") == []):
+        threads = True
+    else:
+        threads = False
+    return pages, navtitles, navnums, threads
 
 def getForum(fid, page):
     try:
