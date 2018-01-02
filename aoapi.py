@@ -100,7 +100,10 @@ def getPage(tid, pid):
         pageauthors.append(post[0].get_text())
         pagetimes.append(post[1].get_text())
         pageposts.append(str(post[2])[21:-6])
-    pages = page.find_all(class_="multipage")[0].get_text().split(" ")[-2]
+    try:
+        pages = page.find_all(class_="multipage")[0].get_text().split(" ")[-2]
+    except:
+        pages = 1
     navigation = page.find_all(class_="navigation")[0]
     navigators = navigation.find_all("a")
     navigators.pop(0)

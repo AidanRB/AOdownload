@@ -88,7 +88,7 @@ for i in range(len(threads)):
     filename = foldername + "/thread" + str(threadnum) + "pages" + str(firstpage) + "-" + str(lastpage) + ".html"
     outfile = open(filename, "w")
 
-    print("Downloading thread " + str(threadnum) + " (" + str(len(threads)) + " left) to " + filename)
+    print("\nDownloading thread " + str(threadnum) + " (" + str(len(threads)) + " left) to " + filename)
 
     progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 1, suffix = '%(eta_td)s')
 
