@@ -4,22 +4,16 @@ from bs4 import BeautifulSoup
 
 aoapi.username = raw_input("user:")
 aoapi.password = getpass.getpass("pass:")
-print(aoapi.gatherCredentials())
+aoapi.gatherCredentials()
 
-def getSubfs(forumhtml):
-    soup = BeautifulSoup(str(forumhtml), "html.parser")
-    htmls = []
-    for item in soup.find_all("li"):
-        if(item.find_all("strong") == []):
-            htmls.append(item)
-    nums = []
-    for item in htmls:
-        soup = BeautifulSoup(str(item))
-        a = soup.find("a")
-        link = a["href"]
-        nums.append(link[58:-5])
-    return nums
+# This finds all threads within a given forum
+# to be passed to the downloader individually
+rootforum = 14
+baseforums = []
+currentforum = aoapi.getForum(rootforum, 1)
+if(not currentforum[1]):
+    for page in range(int(currentforum[0])):
+        baseforums += aoapi.getForum(rootforum, page)[4]
+else:
+    baseforums = [rootforum]
 
-subnums = getSubfs(str(aoapi.getForum(21,1)[3][0]))
-
-print(aoapi.getForum(subnums[0],1))
