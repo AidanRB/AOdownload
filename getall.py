@@ -7,6 +7,19 @@ from progress.bar import Bar
 verbose = False
 foldername = "what_have_I_done"
 
+def writeThreadsFile(threads, filename):
+    threadsfile = open(foldername + "/" + filename, "w")
+    threadsstring = ""
+    for thread in threads:
+        threadsstring += str(thread) + " "
+    threadsfile.write(threadsstring)
+    threadsfile.close()
+
+def readThreadsFile(filename):
+    threadsfile = open(foldername + "/" + filename, "r")
+    threadsstring = threadsfile.read()
+    return threadsstring.split()
+
 logged = False
 while(not logged):
     aoapi.inputLogin()
@@ -16,54 +29,66 @@ print("Success.\n")
 if not os.path.exists(foldername):
     os.makedirs(foldername)
 
-print("Beginning forum listing download")
+if not os.path.exists(foldername + "/incompletethreads"):
+    print("Beginning forum listing download")
 
-rootforum = 14
-forums = []
-currentforum = aoapi.getForum(rootforum, 1)
-if(not currentforum[1]):
-    for page in range(int(currentforum[0])):
-        forums += aoapi.getForum(rootforum, page)[4]
-else:
-    forums = [rootforum]
+    rootforum = 14
+    forums = []
+    currentforum = aoapi.getForum(rootforum, 1)
+    if(not currentforum[1]):
+        for page in range(int(currentforum[0])):
+            forums += aoapi.getForum(rootforum, page)[4]
+    else:
+        forums = [rootforum]
 
-print("Forum listing downloaded")
-if(verbose):
-    print(forums)
-print("\nBeginning thread listing download")
-
-threads = []
-for fnumber in forums:
-    page1 = aoapi.getForum(fnumber, 1)
-    threads += page1[4]
-    print("Added forum " + str(fnumber) + " page 1")
+    print("Forum listing downloaded")
     if(verbose):
-        print(page1[4])
-    if(page1[0] != 1):
-        for page in range(int(page1[0]) - 1):
-            threadstoadd = aoapi.getForum(fnumber, page + 2)[4]
-            threads += threadstoadd
-            print("Added forum " + str(fnumber) + " page " + str(page + 2))
-            if(verbose):
-                print(threadstoadd)
-    print
+        print(forums)
+    print("\nBeginning thread listing download")
 
-threads = sorted(threads)
+    threads = []
+    for fnumber in forums:
+        page1 = aoapi.getForum(fnumber, 1)
+        threads += page1[4]
+        print("Added forum " + str(fnumber) + " page 1")
+        if(verbose):
+            print(page1[4])
+        if(page1[0] != 1):
+            for page in range(int(page1[0]) - 1):
+                threadstoadd = aoapi.getForum(fnumber, page + 2)[4]
+                threads += threadstoadd
+                print("Added forum " + str(fnumber) + " page " + str(page + 2))
+                if(verbose):
+                    print(threadstoadd)
+        print
 
-print("Thread listing downloaded")
-if(verbose):
-    print(threads)
+    threads = sorted(threads)
+
+    writeThreadsFile(threads, "incompletethreads")
+
+    print("Thread listing downloaded")
+    if(verbose):
+        print(threads)
+else:
+    print("Threads file exists; restoring from incomplete download")
+    threads = readThreadsFile("incompletethreads")
+
+    if(verbose):
+        print(threads)
+
 print("\nBeginning threads download")
 
 firstpage = 1
 for i in range(len(threads)):
-    threadnum = threads[i]
+    threads = readThreadsFile("incompletethreads")
+
+    threadnum = threads[0]
     lastpage = int(aoapi.getPage(threadnum, 1)[4])
 
     filename = foldername + "/thread" + str(threadnum) + "pages" + str(firstpage) + "-" + str(lastpage) + ".html"
     outfile = open(filename, "w")
 
-    print("Downloading thread " + str(threadnum) + " (" + str(i) + "/" + str(len(threads)) + ") to page " + str(lastpage) + " to " + filename)
+    print("Downloading thread " + str(threadnum) + " (" + str(len(threads)) + " left) to " + filename)
 
     progressbar = Bar('Downloading %(index)d/%(max)d', max = lastpage - firstpage + 1, suffix = '%(eta_td)s')
 
@@ -159,3 +184,4 @@ for i in range(len(threads)):
     outfile.write("</body>\n</html>\n")
     outfile.close()
     progressbar.finish()
+    writeThreadsFile(threads[1:], "incompletethreads")
