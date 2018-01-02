@@ -249,9 +249,9 @@ def getForum(fid, page):
     try:
         login
     except NameError:
-        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html").content, "html.parser")
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html").content, "html.parser")
     else:
-        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + ".html", cookies = login.cookies).content, "html.parser")
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php?forum-" + str(fid) + "-" + str(page) + ".html", cookies = login.cookies).content, "html.parser")
     if(forumSoup.find_all("div", class_="error") != []):
         return False
     try:
@@ -299,5 +299,8 @@ def getForum(fid, page):
             link = a["href"]
             nums.append(int(link[59:-5]))
             names.append(a.get_text())
-            replies.append(int(soup.find("span").get_text().replace(',','')[2:-9]))
+            try:
+                replies.append(int(soup.find("span").get_text().replace(',','')[2:-9]))
+            except:
+                replies.append(1)
         return pages, False, navtitles, navnums, nums, names, replies
