@@ -26,10 +26,12 @@ while(not logged):
     logged = aoapi.gatherCredentials()
 print("Success.\n")
 
+incompletename = "incompletethreads_" + aoapi.username.lower()
+
 if not os.path.exists(foldername):
     os.makedirs(foldername)
 
-if not os.path.exists(foldername + "/incompletethreads"):
+if not os.path.exists(foldername + "/" + incompletename):
     print("Beginning forum listing download")
 
     rootforum = 14
@@ -64,23 +66,23 @@ if not os.path.exists(foldername + "/incompletethreads"):
 
     threads = sorted(threads)
 
-    writeThreadsFile(threads, "incompletethreads")
+    writeThreadsFile(threads, incompletename)
 
     print("Thread listing downloaded")
     if(verbose):
         print(threads)
 else:
     print("Threads file exists; restoring from incomplete download")
-    threads = readThreadsFile("incompletethreads")
+    threads = readThreadsFile(incompletename)
 
     if(verbose):
         print(threads)
 
-print("\nBeginning threads download")
+print("\nBeginning download of " + str(len(threads)) + " threads")
 
 firstpage = 1
 for i in range(len(threads)):
-    threads = readThreadsFile("incompletethreads")
+    threads = readThreadsFile(incompletename)
 
     threadnum = threads[0]
     lastpage = int(aoapi.getPage(threadnum, 1)[4])
@@ -184,4 +186,4 @@ for i in range(len(threads)):
     outfile.write("</body>\n</html>\n")
     outfile.close()
     progressbar.finish()
-    writeThreadsFile(threads[1:], "incompletethreads")
+    writeThreadsFile(threads[1:], incompletename)
