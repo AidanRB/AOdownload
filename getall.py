@@ -34,14 +34,17 @@ if not os.path.exists(foldername):
 if not os.path.exists(foldername + "/" + incompletename):
     print("Beginning forum listing download")
 
-    rootforum = 14
+    rootforum = input("Root forum (0 for all):\t")
     forums = []
-    currentforum = aoapi.getForum(rootforum, 1)
-    if(not currentforum[1]):
-        for page in range(int(currentforum[0])):
-            forums += aoapi.getForum(rootforum, page)[4]
+    if(rootforum != 0):
+        currentforum = aoapi.getForum(rootforum, 1)
+        if(not currentforum[1]):
+            for page in range(int(currentforum[0])):
+                forums += aoapi.getForum(rootforum, page)[4]
+        else:
+            forums = [rootforum]
     else:
-        forums = [rootforum]
+        forums = aoapi.getRoot()[0]
 
     print("Forum listing downloaded")
     if(verbose):

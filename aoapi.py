@@ -307,3 +307,30 @@ def getForum(fid, page):
             except:
                 replies.append(1)
         return pages, False, navtitles, navnums, nums, names, replies
+        
+def getRoot():
+    """Gets all forums accessible by the user.
+    Returns numbers, names.
+    """
+    try:
+        login
+    except NameError:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php").content, "html.parser")
+    else:
+        forumSoup = BeautifulSoup(requests.get("https://amblesideonline.org/forum/archive/index.php", cookies = login.cookies).content, "html.parser")
+    if(forumSoup.find_all("div", class_="error") != []):
+        return False
+    forumlist = forumSoup.find_all(class_="forumlist")
+    htmls = []
+    for item in forumSoup.find_all("li"):
+        if(item.find_all("strong") == []):
+            htmls.append(item)
+    nums = []
+    names = []
+    for item in htmls:
+        soup = BeautifulSoup(str(item), "html.parser")
+        a = soup.find("a")
+        link = a["href"]
+        nums.append(int(link[58:-5]))
+        names.append(a.get_text())
+    return nums, names
